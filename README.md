@@ -8,7 +8,7 @@ A comprehensive workforce management and shift analytics platform. **ShiftTrack*
 
 ### **Backend (Shift Engine)**
 - **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10+)
-- **Database**: [SQLModel](https://sqlmodel.tiangolo.com/) with SQLite (Async-ready)
+- **Database**: [SQLModel](https://sqlmodel.tiangolo.com/) with **PostgreSQL**
 - **PDF Infrastructure**: [pdfplumber](https://github.com/jsvine/pdfplumber) for high-precision data extraction
 - **Data Validation**: Pydantic v2
 - **Alerting**: Rule-based detection for overtime, break violations, and split shifts
@@ -54,7 +54,7 @@ source .venv/bin/activate
 # Execute the parser
 python parse_shifts.py doc/your_shift_report.pdf
 ```
-*The parser will extract shift timings, employee names, and break data, then store them in the local SQLite database (`database.db`).*
+*The parser will extract shift timings, employee names, and break data, then store them in the configured PostgreSQL database.*
 
 ### **3. Frontend Setup**
 Navigate to the frontend directory and start the dev server:
@@ -71,6 +71,8 @@ npm install
 # Start development server
 npm run dev
 ```
+
+*Note: Ensure the backend `.env` file contains a valid `DATABASE_URL` (e.g., `postgresql://user:password@localhost/dbname`).*
 
 ---
 
@@ -89,4 +91,3 @@ npm run dev
 - `/Backend`: FastAPI app, SQLModel schemas, and PDF parsing pipeline.
 - `/ShiftPulse`: React application with RTK Query and Recharts.
 - `/doc`: Directory for source shift data PDFs.
-- `database.db`: SQLite database file (generated after first parse).
