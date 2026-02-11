@@ -1,0 +1,28 @@
+# Common
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backend
+Backend/__pycache__/
+Backend/*.py[cod]
+Backend/.venv/
+Backend/venv/
+Backend/env/
+Backend/ENV/
+Backend/.env
+Backend/pipeline_artifacts/
+Backend/parser_output*.txt
+Backend/*.db
+Backend/*.sqlite3
+
+# Frontend
+ShiftPulse/node_modules/
+ShiftPulse/dist/
+ShiftPulse/dist-ssr/
+ShiftPulse/.env
+ShiftPulse/.env.*
+!ShiftPulse/.env.example
+ShiftPulse/*.local
