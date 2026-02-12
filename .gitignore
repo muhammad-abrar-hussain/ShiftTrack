@@ -14,6 +14,7 @@ Backend/env/
 Backend/ENV/
 Backend/.env
 Backend/pipeline_artifacts/
+Backend/uploads/
 Backend/parser_output*.txt
 Backend/*.db
 Backend/*.sqlite3

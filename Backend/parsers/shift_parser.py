@@ -37,6 +37,7 @@ class ShiftRecord:
     scheduled_break_hours: Optional[Decimal]
     break_hours: Optional[Decimal]
     punches: List[PunchTime]
+    scheduled_punches: List[PunchTime]
 
 class PDFParser:
     """
@@ -122,6 +123,7 @@ class PDFParser:
             scheduled_break_hours = Decimal('0')
             break_hours = None
             punches = []
+            scheduled_punches = []
             
             for line in record_lines:
                 if 'Actual' in line and not line.startswith('Total'):
@@ -154,6 +156,7 @@ class PDFParser:
                                 if sw_h < 100:
                                     scheduled_working_hours = sw_h
                         except: pass
+                    scheduled_punches = self.parse_punch_times(line, business_date)
             
             return ShiftRecord(
                 employee_first_name=first_name,
@@ -164,6 +167,7 @@ class PDFParser:
                 scheduled_break_hours=scheduled_break_hours,
                 break_hours=break_hours,
                 punches=punches,
+                scheduled_punches=scheduled_punches or [],
             )
         except Exception as e:
             print(f"⚠️  Error parsing record: {e}")

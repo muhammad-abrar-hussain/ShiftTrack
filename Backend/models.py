@@ -47,3 +47,34 @@ class ShiftPunch(SQLModel, table=True):
     
     # Relationship back to summary
     shift_summary: Optional[ShiftSummary] = Relationship(back_populates="punches")
+
+
+class AttendanceRecord(SQLModel, table=True):
+    """
+    Consolidated attendance table for easy reporting and management.
+    Derived from ShiftSummary but allows for manual status overrides and notes.
+    """
+    __tablename__ = "attendance_records"
+    
+    id: Optional[int] = Field(default=None, primary_key=True)
+    shift_summary_id: Optional[int] = Field(default=None, foreign_key="shift_summary.id", index=True)
+    
+    employee_first_name: str = Field(index=True)
+    employee_last_name: str = Field(index=True)
+    business_date: date = Field(index=True)
+    
+    # Status: Present, Absent, Late, Early Departure, Partial
+    status: str = Field(default="Present", index=True)
+    
+    # Detailed times (can be null if absent)
+    actual_start: Optional[datetime] = None
+    actual_end: Optional[datetime] = None
+    scheduled_start: Optional[datetime] = None
+    scheduled_end: Optional[datetime] = None
+    
+    total_hours: Decimal = Field(default=0, max_digits=5, decimal_places=2)
+    variance_hours: Decimal = Field(default=0, max_digits=5, decimal_places=2)
+    
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)

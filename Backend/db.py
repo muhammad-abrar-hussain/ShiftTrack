@@ -23,6 +23,7 @@ def init_db():
     Initialize database tables.
     Creates all tables defined in models.
     """
+    from models import ShiftSummary, ShiftPunch, AttendanceRecord
     SQLModel.metadata.create_all(engine)
     print("Database tables created successfully!")
 

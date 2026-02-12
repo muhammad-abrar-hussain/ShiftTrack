@@ -6,6 +6,11 @@ interface StatusBadgeProps {
 export function StatusBadge({ status, size = "sm" }: StatusBadgeProps) {
   const styles: Record<string, string> = {
     "on-time": "bg-status-success/15 text-status-success border-status-success/30",
+    "Present": "bg-status-success/15 text-status-success border-status-success/30",
+    "Absent": "bg-status-danger/15 text-status-danger border-status-danger/30",
+    "Late": "bg-status-warning/15 text-status-warning border-status-warning/30",
+    "Left Early": "bg-status-warning/15 text-status-warning border-status-warning/30",
+    "Overtime": "bg-accent/15 text-accent border-accent/30",
     "late": "bg-status-warning/15 text-status-warning border-status-warning/30",
     "early-out": "bg-status-warning/15 text-status-warning border-status-warning/30",
     "missed": "bg-status-danger/15 text-status-danger border-status-danger/30",

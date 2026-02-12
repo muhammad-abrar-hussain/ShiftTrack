@@ -1,11 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlmodel import Session, select, func
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+import os
+import shutil
+from pathlib import Path
 
 # Local imports
 from db import get_session
 from models import ShiftSummary, ShiftPunch
+from parsers.shift_parser import PDFParser
+from services.shift_service import ShiftDataService
 
 router = APIRouter(
     prefix="/shifts",
@@ -183,3 +188,62 @@ def get_shift_stats_daily(
         for r in results
     ]
 
+@router.post("/upload")
+async def upload_shift_report(
+    file: UploadFile = File(...),
+    session: Session = Depends(get_session)
+):
+    """
+    Upload a PDF shift report, parse it, and store records in the database.
+    """
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+
+    # Ensure uploads directory exists
+    upload_dir = Path("uploads")
+    upload_dir.mkdir(exist_ok=True)
+    
+    file_path = upload_dir / file.filename
+    
+    try:
+        # Save temporary file
+        with file_path.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+            
+        # Parse PDF
+        parser = PDFParser(str(file_path))
+        records = parser.parse()
+        
+        if not records:
+            return {
+                "message": "No records found in PDF",
+                "stats": {
+                    "total_records": 0,
+                    "summaries_inserted": 0,
+                    "punches_inserted": 0,
+                    "errors": 0
+                }
+            }
+        
+        # Store in database
+        with ShiftDataService() as service:
+            stats = service.insert_shift_records(records)
+            
+        return {
+            "message": "File processed successfully",
+            "stats": stats,
+            "filename": file.filename
+        }
+        
+    except Exception as e:
+        print(f"Error processing upload: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # Clean up temporary file if it exists
+        if file_path.exists():
+            try:
+                os.remove(file_path)
+            except:
+                pass

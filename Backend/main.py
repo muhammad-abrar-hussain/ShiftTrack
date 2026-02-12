@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # Local imports
 from db import init_db
-from routes import shifts, employees, alerts
+from routes import shifts, employees, alerts, attendance
 
 # -----------------------------------------------------------------------------
 # 🚀 App Initialization
@@ -48,3 +48,4 @@ def health():
 app.include_router(shifts.router)
 app.include_router(employees.router)
 app.include_router(alerts.router)
+app.include_router(attendance.router)

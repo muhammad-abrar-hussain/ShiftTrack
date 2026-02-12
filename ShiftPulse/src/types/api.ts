@@ -53,3 +53,19 @@ export interface Alert {
     date: string;
     suggestion: string;
 }
+
+export interface AttendanceRecord {
+    id: number;
+    shift_summary_id?: number;
+    employee_first_name: string;
+    employee_last_name: string;
+    business_date: string;
+    status: 'Present' | 'Absent' | 'Late' | 'Left Early' | 'Overtime' | string;
+    actual_start?: string;
+    actual_end?: string;
+    scheduled_start?: string;
+    scheduled_end?: string;
+    total_hours: number;
+    variance_hours: number;
+    notes?: string;
+}

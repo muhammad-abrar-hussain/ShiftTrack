@@ -4,6 +4,7 @@ import {
   BarChart3,
   AlertTriangle,
   ChefHat,
+  CalendarCheck,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -21,6 +22,7 @@ import {
 const navItems = [
   { title: "Overview", url: "/", icon: LayoutDashboard },
   { title: "Employees", url: "/employees", icon: Users },
+  { title: "Attendance", url: "/attendance", icon: CalendarCheck },
   { title: "Shift Analytics", url: "/shift-analytics", icon: BarChart3 },
   { title: "Alerts", url: "/alerts", icon: AlertTriangle },
 ];

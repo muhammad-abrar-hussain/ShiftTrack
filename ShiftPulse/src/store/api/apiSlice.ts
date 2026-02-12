@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { ShiftSummary, Employee, ShiftPunch, EmployeeStats, EmployeeTrend, Alert } from '../../types/api';
+import type { ShiftSummary, Employee, ShiftPunch, EmployeeStats, EmployeeTrend, Alert, AttendanceRecord } from '../../types/api';
 
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_BASE_URL }),
-    tagTypes: ['Shift', 'Employee', 'Alert'],
+    tagTypes: ['Shift', 'Employee', 'Alert', 'Attendance'],
     endpoints: (builder) => ({
         getShifts: builder.query<ShiftSummary[], { employee_last_name?: string; start_date?: string; end_date?: string }>({
             query: (params) => ({
@@ -67,6 +67,36 @@ export const apiSlice = createApi({
             }),
             providesTags: ['Alert'],
         }),
+        uploadShiftReport: builder.mutation<{ message: string; stats: any; filename: string }, FormData>({
+            query: (formData) => ({
+                url: '/shifts/upload',
+                method: 'POST',
+                body: formData,
+            }),
+            invalidatesTags: ['Shift', 'Employee', 'Alert', 'Attendance'],
+        }),
+        getAttendance: builder.query<AttendanceRecord[], { start_date?: string; end_date?: string; status?: string }>({
+            query: (params) => ({
+                url: '/attendance/',
+                params,
+            }),
+            providesTags: ['Attendance'],
+        }),
+        getAttendanceSummary: builder.query<any, { start_date?: string; end_date?: string }>({
+            query: (params) => ({
+                url: '/attendance/summary',
+                params,
+            }),
+            providesTags: ['Attendance'],
+        }),
+        submitBulkAttendance: builder.mutation<any, { business_date: string; records: any[] }>({
+            query: (data) => ({
+                url: '/attendance/bulk',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['Attendance'],
+        }),
     }),
 });
 
@@ -81,4 +111,8 @@ export const {
     useGetOverviewDailyQuery,
     useGetShiftAnalyticsQuery,
     useGetAlertsQuery,
+    useUploadShiftReportMutation,
+    useGetAttendanceQuery,
+    useGetAttendanceSummaryQuery,
+    useSubmitBulkAttendanceMutation,
 } = apiSlice;

@@ -9,6 +9,9 @@ import Employees from "./pages/Employees";
 import EmployeeDetail from "./pages/EmployeeDetail";
 import ShiftAnalytics from "./pages/ShiftAnalytics";
 import Alerts from "./pages/Alerts";
+import Attendance from "./pages/Attendance";
+import MarkAttendance from "./pages/MarkAttendance";
+import Upload from "./pages/Upload";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,10 +25,13 @@ const App = () => (
         <DashboardLayout>
           <Routes>
             <Route path="/" element={<Overview />} />
+            <Route path="/upload" element={<Upload />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/employees/:id" element={<EmployeeDetail />} />
             <Route path="/shift-analytics" element={<ShiftAnalytics />} />
             <Route path="/alerts" element={<Alerts />} />
+            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/attendance/mark" element={<MarkAttendance />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </DashboardLayout>

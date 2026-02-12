@@ -4,10 +4,11 @@ Handles insertion of shift summaries and punch records.
 """
 
 from sqlmodel import Session, select
+from decimal import Decimal
 from typing import List
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from models import ShiftSummary, ShiftPunch
+from models import ShiftSummary, ShiftPunch, AttendanceRecord
 from parsers.shift_parser import ShiftRecord
 from db import engine
 
@@ -71,6 +72,33 @@ class ShiftDataService:
                     )
                     self.session.add(punch_record)
                     stats['punches_inserted'] += 1
+                
+                # Create attendance record
+                actual_start = min([p.start for p in record.punches]) if record.punches else None
+                actual_end = max([p.end for p in record.punches]) if record.punches else None
+                sched_start = min([p.start for p in record.scheduled_punches]) if record.scheduled_punches else None
+                sched_end = max([p.end for p in record.scheduled_punches]) if record.scheduled_punches else None
+                
+                status = "Present"
+                if (record.scheduled_working_hours or Decimal('0')) > Decimal('0') and (not record.actual_working_hours or record.actual_working_hours == Decimal('0')):
+                    status = "Absent"
+                elif sched_start and actual_start and actual_start > (sched_start + timedelta(minutes=7)):
+                    status = "Late"
+
+                attendance = AttendanceRecord(
+                    shift_summary_id=summary.id,
+                    employee_first_name=record.employee_first_name,
+                    employee_last_name=record.employee_last_name,
+                    business_date=record.business_date,
+                    status=status,
+                    actual_start=actual_start,
+                    actual_end=actual_end,
+                    scheduled_start=sched_start,
+                    scheduled_end=sched_end,
+                    total_hours=record.actual_working_hours or Decimal('0'),
+                    variance_hours=(record.actual_working_hours or Decimal('0')) - (record.scheduled_working_hours or Decimal('0'))
+                )
+                self.session.add(attendance)
                 
                 # Commit after each record
                 self.session.commit()
