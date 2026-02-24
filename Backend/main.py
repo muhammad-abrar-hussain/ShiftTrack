@@ -24,10 +24,10 @@ app.add_middleware(
 # -----------------------------------------------------------------------------
 # 🗄️ Database Initialization
 # -----------------------------------------------------------------------------
-@app.on_event("startup")
-def on_startup():
-    """Initialize database tables when the FastAPI app starts."""
-    init_db()
+# @app.on_event("startup")
+# def on_startup():
+#     """Initialize database tables when the FastAPI app starts."""
+#     init_db()
 
 # -----------------------------------------------------------------------------
 # 🏠 Core Root & Health Endpoints
